@@ -5,6 +5,14 @@ services:
     build: ./ML
     ports:
       - "8000:8000"
+    volumes:
+      - hf-cache:/root/.cache/huggingface
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/')\" || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 600s 
 
   backend:
     build: ./Backend
@@ -15,7 +23,8 @@ services:
     env_file:
       - ./Backend/.env
     depends_on:
-      - ml-server
+      ml-server:
+        condition: service_healthy
 
   frontend:
     build: ./frontend
@@ -23,3 +32,6 @@ services:
       - "5173:80"
     depends_on:
       - backend
+
+volumes:
+  hf-cache:
