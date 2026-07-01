@@ -3,6 +3,7 @@ version: '3.8'
 services:
   ml-server:
     build: ./ML
+    restart: always
     ports:
       - "8000:8000"
     volumes:
@@ -16,6 +17,7 @@ services:
 
   backend:
     build: ./Backend
+    restart: always
     ports:
       - "3000:3000"
     environment:
@@ -28,6 +30,7 @@ services:
 
   frontend:
     build: ./frontend
+    restart: always
     ports:
       - "5173:80"
     depends_on:
